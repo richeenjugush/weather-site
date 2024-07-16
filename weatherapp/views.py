@@ -1,22 +1,38 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 import json
-import urllib.request 
+import urllib.request
+import os
 
-# Create your views here.
 def index(request):
+    data = {}
+    error_message = ''
     if request.method == 'POST':
         city = request.POST['city'].capitalize()
-        res = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?q='+city+'&appid=2d9573fad51edd8ff0d95a9549b07742&units=metric').read()
-        json_data = json.loads(res)       
-        data = {
-            "country_code": str(json_data['sys']['country']),
-            "coordinate": str(json_data['coord']['lon']) + ' ' +
-            str(json_data['coord']['lat']),
-            "temp": str(json_data['main']['temp']),
-            "pressure": str(json_data['main']['pressure']),
-            "humidity": str(json_data['main']['humidity']),
-        }
-    else:
-        data = ''
-        city = ''
-    return render(request, 'index.html',{'city':city, 'data':data}) 
+        try:
+            api_key = os.getenv('OPENWEATHERMAP_API_KEY')  # Ensure this environment variable is set
+            url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric'
+            res = urllib.request.urlopen(url).read()
+            json_data = json.loads(res)
+            if json_data.get('cod') != 200:
+                error_message = json_data.get('message', 'Error fetching weather data')
+            else:
+                data = {
+                    "country_code": str(json_data['sys']['country']),
+                    "coordinate": str(json_data['coord']['lon']) + ' ' + str(json_data['coord']['lat']),
+                    "temp": str(json_data['main']['temp']),
+                    "pressure": str(json_data['main']['pressure']),
+                    "humidity": str(json_data['main']['humidity']),
+                    "city": city
+                }
+        except urllib.error.HTTPError as e:
+            error_message = f"HTTP error occurred: {e.reason}"
+        except urllib.error.URLError as e:
+            error_message = f"URL error occurred: {e.reason}"
+        except ValueError as e:
+            error_message = str(e)
+        except Exception as e:
+            error_message = f"An unexpected error occurred: {str(e)}"
+    
+    return render(request, 'index.html', {'data': data, 'error_message': error_message})
+

@@ -1,115 +1,122 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>weather</title>
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <title>weather</title>
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-  <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f1f1f1;
+      }
 
-  <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-	    background-color: #f1f1f1;
-    }
+      h1 {
+        margin-top: 50px;
+      }
 
-    h1 {
-      margin-top: 50px;
-    }
+      #result {
+        margin-top: 50px;
+        font-size: 18px;
+        font-weight: bold;
+      }
 
-    #result {
-      margin-top: 50px;
-      font-size: 18px;
-      font-weight: bold;
-    }
+      table {
+        margin-top: 10px;
+        border-collapse: collapse;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-    table {
-      margin-top: 10px;
-      border-collapse: collapse;
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-    }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
 
-    th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: left;
-    }
+      th {
+        background-color: #dddddd;
+      }
 
-    th {
-      background-color: #dddddd;
-    }
+      .btn {
+        background-color: lightblue;
+        color: white;
+        border-radius: 5px;
+      }
 
-    .btn {
-      background-color: lightblue;
-      color: white;
-      border-radius: 5px;
-    } 
+      .form-control {
+        background-color: lightyellow;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
 
-    .form-control {
-      background-color: lightyellow;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-
-<body>
-  <nav class="row" style="background: #8ecff5;">
-    <div align="center"><h1 class="text-center">Richee's Weather Site</h1></div>
-  </nav>
-  <br />
-  <br />
-  <center class="row">
-    <form action="" method="post" class="col-md-6 col-md-offset-3">
-      {% csrf_token %}
-      <div class="input-group">
-        <input type="text" class="form-control" name="city" placeholder="Search City">
-        <div class="input-group-btn">
-          <button class="btn btn-default" type="submit">
-            <i class="glyphicon glyphicon-search"></i>
-          </button>
+  <body>
+    <nav class="row" style="background: #8ecff5">
+      <div align="center">
+        <h1 class="text-center">Richee's Weather Site</h1>
       </div>
-    <form>
-  </center>
-  {% if data.country_code %}
+    </nav>
+    <br />
+    <br />
+    <center class="row">
+      <form action="" method="POST" class="col-md-6 col-md-offset-3">
+        {% csrf_token %}
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            name="city"
+            placeholder="Search City"
+          />
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </center>
+    {% if error_message %}
+    <p style="color: red">{{ error_message }}</p>
+    {% endif %} {% if data %}
     <div class="col-md-6 col-md-offset-3">
-     <table>
-    <tr>
-      <th>City</th>
-      <td>{{ city }}</td>
-    </tr>
-    <tr>
-      <th>Country Code</th>
-      <td>{{ data.country_code }}</td>
-    </tr>
-    <tr>
-      <th>Coordinates</th>
-      <td>({{ data.coordinate }})</td>
-    </tr>
-    <tr>
-      <th>Temperature (°C)</th>
-      <td>{{ data.temp }}</td>
-    </tr>
-    <th>Pressure</th>
-<td>{{ data.pressure }}</td>
-</tr>
-<tr>
-<th>Humidity</th>
-<td>{{ data.humidity }}</td>
-</tr>
-  </table> 
+      <h2>Weather in {{ data.city }}</h2>
+      <table>
+        <tr>
+          <th>Country Code</th>
+          <td>{{ data.country_code }}</td>
+        </tr>
+        <tr>
+          <th>Coordinates</th>
+          <td>{{ data.coordinate }}</td>
+        </tr>
+        <tr>
+          <th>Temperature</th>
+          <td>{{ data.temp }} °C</td>
+        </tr>
+        <tr>
+          <th>Pressure</th>
+          <td>{{ data.pressure }} hPa</td>
+        </tr>
+        <tr>
+          <th>Humidity</th>
+          <td>{{ data.humidity }} %</td>
+        </tr>
+      </table>
     </div>
-  {% else %}  
-  <h2>Not Found</h2>
-  {% endif %}  
-  </div>
-</body>
-
+    {% endif %}
+  </body>
 </html>
