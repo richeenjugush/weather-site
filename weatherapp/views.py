@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.conf import settings
 import json
 import urllib.request
-import os
+from django.core.exceptions import ImproperlyConfigured
 
 def index(request):
     data = {}
@@ -10,7 +10,7 @@ def index(request):
     if request.method == 'POST':
         city = request.POST['city'].capitalize()
         try:
-            api_key = os.getenv('OPENWEATHERMAP_API_KEY')  # Ensure this environment variable is set
+            api_key = settings.OPENWEATHERMAP_API_KEY  # Access the API key from settings
             url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric'
             res = urllib.request.urlopen(url).read()
             json_data = json.loads(res)
@@ -29,10 +29,9 @@ def index(request):
             error_message = f"HTTP error occurred: {e.reason}"
         except urllib.error.URLError as e:
             error_message = f"URL error occurred: {e.reason}"
-        except ValueError as e:
+        except ImproperlyConfigured as e:
             error_message = str(e)
         except Exception as e:
             error_message = f"An unexpected error occurred: {str(e)}"
     
     return render(request, 'index.html', {'data': data, 'error_message': error_message})
-

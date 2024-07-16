@@ -11,24 +11,27 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import environ
+
 import os
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
-# Initialize environment variables
-env = environ.Env()
+# Load environment variables from .env file
+load_dotenv()
 
-# Use the environment variables
-try:
-    OPENWEATHERMAP_API_KEY = env('OPENWEATHERMAP_API_KEY')
-    if not OPENWEATHERMAP_API_KEY:
-        raise ImproperlyConfigured("Set the OPENWEATHERMAP_API_KEY environment variable")
-except KeyError as exc:
-    raise ImproperlyConfigured("Set the OPENWEATHERMAP_API_KEY environment variable") from exc
+def get_env_variable(var_name):
+    """ Get the environment variable or return exception """
+    try:
+        return os.getenv(var_name)
+    except KeyError:
+        raise ImproperlyConfigured(f"Set the {var_name} environment variable")
+
+# Use the environment variable
+OPENWEATHERMAP_API_KEY = get_env_variable('OPENWEATHERMAP_API_KEY')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
