@@ -3,33 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>weather</title>
+    <title>Weather App</title>
     {% load static %}
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
     />
-    <!-- jQuery library -->
-    {% comment %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    {% endcomment %}
-
-    <!-- Latest compiled JavaScript -->
-    {% comment %}
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    {% endcomment %}
   </head>
   <body>
     <div class="container">
-      <form action="" method="POST">
+      <form action="" method="POST" id="search-form">
         {% csrf_token %}
         <div class="search-box">
           <i class="bi bi-geo-alt"></i>
@@ -37,22 +25,18 @@
             type="text"
             class="form-control"
             name="city"
-            placeholder="Search City.."
+            placeholder="{{data.city}}"
           />
           <button class="btn btn-default" type="submit">
-            <i class="glyphicon glyphicon-search"></i>
+            <i class="bi bi-search"></i>
           </button>
         </div>
       </form>
-
       {% if error_message %}
-      <div class="weather-box">
+      <div class="not-found" id="not-found">
         <div class="box">
-          <div class="info-weather">
-            <div class="weather">
-              <img src="{% static '/images/404.jpg' %}" alt="Example Image" />
-            </div>
-          </div>
+          <img src="{% static 'images/404.png' %}" alt="Location Not Found" />
+          <p>Oops! Location not found!</p>
         </div>
       </div>
       {% else %}
@@ -60,40 +44,36 @@
         <div class="box">
           <div class="info-weather">
             <div class="weather">
-              <img
-                src="{% static '/images/cloudy.jpg' %}"
-                alt="Example Image"
-              />
-              <p class="temperature">{{data.temp}}<span>°C</span></p>
-              <p class="city">{{data.city}}</p>
-              <p class="description">{{data.description}}</p>
+              <img src="{% static 'images/clouds.png' %}" alt="Weather Image" />
+              <p class="temperature">{{ data.temp }}<span>°C</span></p>
+              <p class="description">{{ data.description }}</p>
             </div>
           </div>
         </div>
       </div>
-      {%endif%}
       <div class="weather-details">
         <div class="humidity">
           <i class="bi bi-water"></i>
           <div class="text">
             <div class="info-humidity">
-              <span>{{data.humidity}}%</span>
+              <span>{{ data.humidity }}%</span>
             </div>
-            <p>Humiidity</p>
+            <p>Humidity</p>
           </div>
         </div>
-
         <div class="wind">
           <i class="bi bi-wind"></i>
           <div class="text">
-            <div class="info-humidity">
-              <span>{{data.wind}} km/hr</span>
+            <div class="info-wind">
+              <span>{{ data.wind }} km/hr</span>
             </div>
             <p>Wind Speed</p>
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
+    <script src="{% static 'js/script.js' %}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
