@@ -25,6 +25,7 @@ def index(request):
                     "humidity": str(json_data['main']['humidity']),
                     "wind": str(json_data['wind']['speed']),
                     "description": str(json_data['weather'][0]['description']),
+                    # "description": "rain",
                     "city": city
                 }
         except urllib.error.HTTPError as e:
