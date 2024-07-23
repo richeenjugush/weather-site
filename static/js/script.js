@@ -38,4 +38,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (weatherDetailsElement) weatherDetailsElement.classList.add("active");
     containerElement.style.height = "85vh"; // Adjust container height for success state
   }
+
+  const date = new Date();
+  const today = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "long",
+  }).format(date);
 });
